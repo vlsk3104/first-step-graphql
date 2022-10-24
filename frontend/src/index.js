@@ -11,11 +11,35 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const BOOKS = gql`
+  query Books {
+    books {
+      title
+      author
+    }
+  }
+`;
+
+const Books = () => {
+  const { loading, error, data } = useQuery(BOOKS);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  return data.books.map(({ title, author }) => (
+    <div key={title}>
+      <p>
+        {title} by {author}
+      </p>
+    </div>
+  ));
+}
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <Books />
     </ApolloProvider>
   </React.StrictMode>
 );
